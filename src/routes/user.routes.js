@@ -6,12 +6,12 @@ const usersRoutes = Router();
 
 /* 
 function firstMiddleware(request, response, next){
-    const { password } = request.body;
+  const { password } = request.body;
 
-    if(password.length <= 6)
-        return response.json({message: `A senha deve ser maior que 6 caracteres.`});
+  if(password.length <= 6)
+    return response.json({message: `A senha deve ser maior que 6 caracteres.`});
 
-    next();
+  next();
 }
 */
 
