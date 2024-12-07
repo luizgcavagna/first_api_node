@@ -12,21 +12,21 @@ class UsersController {
    async create(request, response) {
 
       try {
-         const { name, email, password } = request.body;
+        const { name, email, password } = request.body;
 
-         if(!name || !email || !password)
-            throw new AppError('The fields name, email and password are required.');
+        if(!name || !email || !password)
+          throw new AppError('The fields name, email and password are required.');
 
-         const database = await sqliteConnection();
-         const checkUserExists = await database.get('SELECT * FROM users WHERE email = (?)', [email]);
+        const database = await sqliteConnection();
+        const checkUserExists = await database.get('SELECT * FROM users WHERE email = (?)', [email]);
 
-         if(checkUserExists)
-            throw new AppError('User already exists');
+        if(checkUserExists)
+          throw new AppError('User already exists');
 
-         response.status(201).json({ name, email, password });
+        response.status(201).json({ name, email, password });
 
       } catch (error) {
-         console.log(error);
+        console.log(error);
       }
       
    }
