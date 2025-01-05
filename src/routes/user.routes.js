@@ -17,7 +17,9 @@ function firstMiddleware(request, response, next){
 
 const userController = new UserController();
 
-usersRoutes.post('/', userController.create);
+usersRoutes.post('/create', userController.create);
+usersRoutes.put('/update/:id', userController.update);
+
 
 // usersRoutes.post('/', firstMiddleware, userController.create);
 

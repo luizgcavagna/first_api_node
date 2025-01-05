@@ -1,0 +1,2 @@
+lsof -ti :3000
+kill -9 processid
