@@ -20,7 +20,6 @@ const userController = new UserController();
 usersRoutes.post('/create', userController.create);
 usersRoutes.put('/update/:id', userController.update);
 
-
 // usersRoutes.post('/', firstMiddleware, userController.create);
 
 module.exports = usersRoutes;

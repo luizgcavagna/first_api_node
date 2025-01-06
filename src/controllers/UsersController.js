@@ -1,4 +1,4 @@
-const { hash } = require('bcryptjs');
+const { hash, compare } = require('bcryptjs');
 const AppError = require('../utils/AppError');
 const sqliteConnection = require('../database/sqlite');
 
@@ -36,11 +36,11 @@ class UsersController {
   }
 
   async update(request, response) {
-    const { name, email } = request.body;
+    const { name, email, password, old_password } = request.body;
     const { id } = request.params;
 
     const database = await sqliteConnection();
-    const user = await database.get('SELECT id, email FROM users WHERE id = (?)', [id]);
+    const user = await database.get('SELECT id, email, password FROM users WHERE id = (?)', [id]);
 
     if(!user)
       throw new AppError('User not found');
@@ -50,15 +50,25 @@ class UsersController {
     if(userWithUpdateEmail && userWithUpdateEmail.id !== user.id)
       throw new AppError('Thies email already is used');
 
-    user.name = name;
-    user.email = email;
+    user.name = name ?? user.name;
+    user.email = email ?? user.email;
 
-    await database.run('UPDATE users SET name = (?), email = (?), updated_at = (?) WHERE id = (?) ', [user.name, user.email, new Date(), id]);
+    if(password && old_password) {
+      const checkOldPassword = await compare(old_password, user.password);
+
+      if(!checkOldPassword)
+        throw new AppError('Old password does not match');
+
+      user.password = await hash(password, 8);
+
+    }
+
+    await database.run('UPDATE users SET name = (?), email = (?), password = (?), updated_at = DATETIME("now") WHERE id = (?) ', [user.name, user.email, user.password, id]);
 
     response.send(`User ${name}, updated successfully!`);
     
   }
-  
+
 }
 
 module.exports = UsersController;
