@@ -10,6 +10,14 @@ class UsersController {
 	* update - PUT para atualizar um registro.
 	* delete - DELETE para remover um registro.
 	*/
+   async index(request, response) {
+      const database = await sqliteConnection();
+   
+      const users = await database.all('SELECT id, name, email FROM users');
+   
+      response.json(users);
+   }
+
 	async create(request, response) {
 		const { name, email, password } = request.body;
 
@@ -55,7 +63,7 @@ class UsersController {
 
       if(password && !old_password) 
          throw new AppError('Old password is required');
-      
+
 		if (password && old_password) {
 			const checkOldPassword = await compare(old_password, user.password);
 
@@ -72,6 +80,15 @@ class UsersController {
 
 	}
 
+   async delete(request, response) {
+      const { id } = request.params;
+
+      const database = await sqliteConnection();
+
+      await database.run('DELETE FROM users WHERE id = (?)', id);
+
+      response.send(`User with id ${id}, deleted successfully!`);
+   }
 }
 
 module.exports = UsersController;
