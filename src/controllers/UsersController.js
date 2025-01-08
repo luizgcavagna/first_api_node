@@ -53,6 +53,9 @@ class UsersController {
 		user.name = name ?? user.name;
 		user.email = email ?? user.email;
 
+      if(password && !old_password) 
+         throw new AppError('Old password is required');
+      
 		if (password && old_password) {
 			const checkOldPassword = await compare(old_password, user.password);
 
